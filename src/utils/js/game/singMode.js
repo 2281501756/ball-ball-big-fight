@@ -1,7 +1,11 @@
 import GameObject from './game_object'
 import Map from './map/map';
 import Player from './player/player';
+import Multiplayer from '../../socket/multiplayer';
+
 export default function (store, root) {
+  let m = new Multiplayer()
+
   let box = document.createElement('div')
   box.classList = 'playground'
   box.style.height = '100vh'
@@ -13,7 +17,7 @@ export default function (store, root) {
   playground.map = map
   playground.scale = playground.height
   playground.player = []
-  playground.player.push(new Player(playground, 0.5 * playground.width / playground.height, 0.5, 0.05, 0.15, 'white', true, store.state.userPhoto))
+  playground.player.push(new Player(playground, 0.5 * playground.width / playground.height, 0.5, 0.05, 0.2, 'white', true, store.state.userPhoto))
   for (let i = 0; i < 6; i++) {
     let x = Math.random() * playground.width / playground.scale
     let y = Math.random()

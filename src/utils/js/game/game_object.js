@@ -4,6 +4,10 @@ export default class GameObject {
     GameObject.GAMEOBJECT.push(this)
     this.has_start = false
     this.timestamp = 0
+    this.uuid = ""
+    for (let i = 0; i < 20; i++) {
+      this.uuid += Math.floor(Math.random() * 10)
+    }
   }
   start() {
 

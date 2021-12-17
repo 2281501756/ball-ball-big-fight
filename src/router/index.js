@@ -18,11 +18,15 @@ const routes = [
   },
   {
     path: '/setting/personSetting',
-    component: () => import('../view/setting/PersonSetting')
+    component: () => import('../view/gameSetting/PersonSetting')
   },
   {
     path: '/single',
     component: () => import('../view/playground/SingleMode')
+  },
+  {
+    path: '/multi',
+    component: () => import('../view/playground/MultiMode')
   }
 ]
 

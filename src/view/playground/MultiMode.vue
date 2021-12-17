@@ -1,5 +1,5 @@
 <template>
-  <div class="singleMode">
+  <div class="multiMode">
     <div class="menu" v-if="showMenu">
       <button class="menu_item" @click="backGame">返回游戏</button>
       <button class="menu_item" @click="refreshGame">从新开始</button>
@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import gameInit from "@/utils/js/game/singMode";
+import gameInit from "@/utils/js/game/multiMode";
 export default {
   data() {
     return {
@@ -20,16 +20,15 @@ export default {
   mounted() {
     if (this.$store.state.userPhoto != "") {
       cancelAnimationFrame(this.$store.state.animationId);
-      let root = document.querySelector(".singleMode");
+      let root = document.querySelector(".multiMode");
       gameInit(this.$store, root);
     } else {
       setTimeout(() => {
         cancelAnimationFrame(this.$store.state.animationId);
-        let root = document.querySelector(".singleMode");
+        let root = document.querySelector(".multiMode");
         gameInit(this.$store, root);
       }, 300);
     }
-
     window.addEventListener("keydown", (e) => {
       if (e.key === "Escape") {
         this.showMenu = !this.showMenu;
@@ -64,7 +63,7 @@ export default {
 </script>
 
 <style scoped>
-.singleMode {
+.multiMode {
   height: 100vh;
   width: 100vw;
   background: url(~@/assets/image/background/image5.jpg) no-repeat center/cover;

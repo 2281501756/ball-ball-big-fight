@@ -49,14 +49,10 @@ export default class Player extends GameObject {
           setTimeout(() => {
             outer.q_is_cd = false
           }, Fireball.cd);
-        } else if (e.key === 'a') {
-          outer.x -= 0.005
-        } else if (e.key === 'd') {
-          outer.x += 0.005
-        } else if (e.key === 'w') {
-          outer.y -= 0.005
         } else if (e.key === 's') {
-          outer.y += 0.005
+          this.vx = 0
+          this.vy = 0
+          this.moveLength = 0
         }
       }, false)
     }

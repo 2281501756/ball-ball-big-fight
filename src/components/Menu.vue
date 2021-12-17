@@ -5,7 +5,7 @@
     <div class="commen course">教程</div>
     <div class="content">
       <button class="menu-button" @click="single">单人游戏</button>
-      <button class="menu-button">多人游戏</button>
+      <button class="menu-button" @click="multi">多人游戏</button>
       <button class="menu-button">游戏社区</button>
       <div class="menu-bottom-button">
         <button @click="personSetting">个人设置</button>
@@ -22,18 +22,17 @@ export default {
     single() {
       this.$router.push("/single");
     },
+    multi() {
+      this.$router.push("/multi");
+    },
     personSetting() {
       this.$router.push("/setting/personSetting");
     },
     exitGame() {
       this.$router.push("/login");
-      logout()
-        .then((Response) => {
-          console.log(Response);
-        })
-        .catch((e) => {
-          console.log(e);
-        });
+      logout().catch((e) => {
+        console.log(e);
+      });
     },
   },
 };
