@@ -27,7 +27,7 @@ export default {
         cancelAnimationFrame(this.$store.state.animationId);
         let root = document.querySelector(".multiMode");
         gameInit(this.$store, root);
-      }, 300);
+      }, 500);
     }
     window.addEventListener("keydown", (e) => {
       if (e.key === "Escape") {

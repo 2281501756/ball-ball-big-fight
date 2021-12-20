@@ -21,10 +21,23 @@ export default class Fireball extends GameObject {
 
   }
   update() {
-    for (let i = 0; i < this.playground.player.length; i++) {
-      let play = this.playground.player[i]
-      if (play !== this.player && this.getDist(play.x, play.y, this.x, this.y) < this.radius + play.radius) {
-        this.attack(play)
+    if (this.playground.mode == 'multi') {
+      if (this.player === this.playground.player[0]) {
+        for (let i = 1; i < this.playground.player.length; i++) {
+          let play = this.playground.player[i]
+          if (this.getDist(play.x, play.y, this.x, this.y) < this.radius + play.radius) {
+            this.attack(play)
+            break
+          }
+        }
+      }
+    } else {
+      for (let i = 0; i < this.playground.player.length; i++) {
+        let play = this.playground.player[i]
+        if (play !== this.player && this.getDist(play.x, play.y, this.x, this.y) < this.radius + play.radius) {
+          this.attack(play)
+          break
+        }
       }
     }
 
@@ -45,13 +58,18 @@ export default class Fireball extends GameObject {
   }
   attack(player) {
     let angle = Math.atan2(player.y - this.y, player.x - this.x)
-    player.onAttack(angle, 0.2)
+    player.onAttack(angle)
+    if (this.playground.mode === 'multi') {
+      this.playground.ws.send_on_attack(this.player.uuid, player.uuid, this.uuid, player.x, player.y, angle)
+    }
     this.destroy()
   }
   render() {
     let scale = this.playground.height
+    let x = (this.x - this.playground.viewX) * scale
+    let y = (this.y - this.playground.viewY) * scale
     this.ctx.beginPath()
-    this.ctx.arc(this.x * scale, this.y * scale, this.radius * scale, 0, Math.PI * 2, false)
+    this.ctx.arc(x, y, this.radius * scale, 0, Math.PI * 2, false)
     this.ctx.fillStyle = this.color
     this.ctx.fill()
   }

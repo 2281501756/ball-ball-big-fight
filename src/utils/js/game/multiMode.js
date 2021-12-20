@@ -2,6 +2,7 @@ import GameObject from './game_object'
 import Map from './map/map';
 import Player from './player/player';
 import Multiplayer from '../../socket/multiplayer';
+import MinMap from './map/minMap';
 
 export default function (store, root) {
   let box = document.createElement('div')
@@ -12,10 +13,16 @@ export default function (store, root) {
   let playground = document.querySelector('.playground')
   get_unit(playground)
   let map = new Map(playground)
+  playground.minMap = new MinMap(playground)
   playground.map = map
   playground.scale = playground.height
+  playground.mode = 'multi'
+  playground.viewX = 0
+  playground.viewY = 0
+  playground.view_lock_y = false
+  playground.view_lock_blank = false
   playground.player = []
-  playground.player.push(new Player(playground, 0.5 * playground.width / playground.height, 0.5, 0.05, 0.2, 'white', true, store.state.userPhoto))
+  playground.player.push(new Player(playground, 0.5 * playground.width / playground.height, 0.5, 0.05, 0.2, 'white', 'me', store.state.userPhoto, store.state.userName))
   playground.ws = new Multiplayer(playground, playground.player[0].uuid)
   playground.ws.socket.onopen = () => {
     playground.ws.send_create_user(store.state.userName, store.state.userPhoto)

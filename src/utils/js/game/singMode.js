@@ -2,6 +2,7 @@ import GameObject from './game_object'
 import Map from './map/map';
 import Player from './player/player';
 import Multiplayer from '../../socket/multiplayer';
+import MinMap from './map/minMap';
 
 export default function (store, root) {
   let m = new Multiplayer()
@@ -10,22 +11,28 @@ export default function (store, root) {
   box.classList = 'playground'
   box.style.height = '100vh'
   box.style.width = '100vw'
+  box.style.position = 'absolute'
   root.appendChild(box)
   let playground = document.querySelector('.playground')
   get_unit(playground)
   let map = new Map(playground)
   playground.map = map
+  playground.minMap = new MinMap(playground)
   playground.scale = playground.height
   playground.player = []
-  playground.player.push(new Player(playground, 0.5 * playground.width / playground.height, 0.5, 0.05, 0.2, 'white', true, store.state.userPhoto))
+  playground.viewX = 0
+  playground.viewY = 0
+  playground.view_lock_y = false
+  playground.view_lock_blank = false
+  playground.player.push(new Player(playground, 0.5 * playground.width / playground.height, 0.5, 0.05, 0.2, 'white', 'me', store.state.userPhoto, store.state.userName))
   for (let i = 0; i < 6; i++) {
     let x = Math.random() * playground.width / playground.scale
     let y = Math.random()
     let color = `rgb(${Math.random() * 256}, ${Math.random() * 256}, ${Math.random() * 256})`
-    playground.player.push(new Player(playground, x, y, 0.05, 0.15, color, false, ''))
+    playground.player.push(new Player(playground, x, y, 0.05, 0.15, color, 'robot', '', '电脑'))
   }
 
-  add_Window_listenr(playground, map)
+  add_Window_listenr(playground, map, playground.minMap)
   add_GAME_ANIMATION(store)
 }
 
@@ -36,11 +43,12 @@ function get_unit(playground) {
   playground.height = unit * 9
   playground.width = unit * 16
 }
-function add_Window_listenr(playground, map) {
+function add_Window_listenr(playground, map, minMap) {
   window.onresize = function () {
     get_unit(playground)
     playground.scale = playground.height
     map.resize()
+    minMap.resize()
   }
 }
 function add_GAME_ANIMATION(store) {

@@ -11,13 +11,18 @@ const store = new Vuex.Store({
     animationId: 0,
   },
   mutations: {
-
+    getphoto(state) {
+      return state.userPhoto
+    }
   },
   actions: {
-
+    addUserData(context, data) {
+      context.state.userName = data.name
+      context.state.userGender = data.gender
+      context.state.userPhoto = data.photo
+    }
   },
   getters: {
-
 
   },
   modules: {
