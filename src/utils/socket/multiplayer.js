@@ -24,6 +24,8 @@ export default class Multiplayer {
         this.receive_on_attack(data)
       } else if (data.event === 'player_stop') {
         this.receive_player_stop(data)
+      } else if (data.event === 'player_init') {
+        this.recevie_player_init(data)
       }
     }
   }
@@ -80,12 +82,14 @@ export default class Multiplayer {
       ball.uuid = data.ballid
     }
   }
-  send_on_attack(uuid, attackid, fireballid, x, y, angle) {
+  send_on_attack(attack_event, uuid, attackid, fireballid, x, y, angle, hurt) {
     this.socket.send(JSON.stringify({
       "event": "on_attack",
+      "attack_event": attack_event,
       "uuid": uuid,
       "attackid": attackid,
       "fireballid": fireballid,
+      "hurt": hurt,
       "x": x,
       "y": y,
       "angle": angle,
@@ -94,7 +98,10 @@ export default class Multiplayer {
   receive_on_attack(data) {
     let play = this.getPlay(data.attackid)
     let attacker = this.getPlay(data.uuid)
-    if (play && this.uuid !== data.uuid) {
+    let repel_speed = 0
+    if (!play || this.uuid === data.uuid) return
+    if (data.attack_event === 'fireball') {
+      repel_speed = 0.5
       for (let i = 0; i < attacker.fireballs.length; i++) {
         if (attacker.fireballs[i].uuid === data.fireballid) {
           attacker.fireballs[i].destroy()
@@ -102,28 +109,46 @@ export default class Multiplayer {
           break
         }
       }
-      play.x = data.x
-      play.y = data.y
-      play.onAttack(data.angle)
     }
+    play.x = data.x
+    play.y = data.y
+    play.onAttack(data.angle, repel_speed, data.hurt)
+
   }
-  send_player_stop(x, y) {
+  send_player_stop(x, y, HP) {
     this.socket.send(JSON.stringify({
       "event": "player_stop",
       "uuid": this.uuid,
       "x": x,
       "y": y,
+      "HP": HP,
     }))
   }
   receive_player_stop(data) {
-    console.log('停止');
     let play = this.getPlay(data.uuid)
     if (play && this.uuid !== data.uuid) {
       play.x = data.x
       play.y = data.y
       play.vx = 0
       play.vy = 0
+      play.HP = data.HP
       play.moveLength = 0
+    }
+  }
+  send_player_init(x, y, HP) {
+    this.socket.send(JSON.stringify({
+      "event": "player_init",
+      "x": x,
+      "y": y,
+      "HP": HP,
+    }))
+  }
+  recevie_player_init(data) {
+    let play = this.getPlay(data.uuid)
+    if (play && this.uuid !== data.uuid) {
+      play.x = data.x
+      play.y = data.y
+      play.HP = data.HP
     }
   }
 }

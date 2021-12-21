@@ -1,5 +1,6 @@
 import GameObject from "../game_object";
 import Fireball from "../skill/fireball";
+import HPChangeNumber from "./HPChangeNumber";
 export default class Player extends GameObject {
   constructor(playground, x, y, radius, speed, color, character, photo, name) {
     super()
@@ -16,8 +17,11 @@ export default class Player extends GameObject {
     this.moveLength = 0
     this.name = name
     this.fireballs = []
+    this.friction = 1
+    this.status = ''
     this.q_is_cd = false
     this.HP = 10
+    this.HPMAX = 10
   }
   start() {
     this.addd_event_listening()
@@ -63,7 +67,7 @@ export default class Player extends GameObject {
           }, Fireball.cd);
         } else if (e.key === 's') {
           if (this.playground.mode === 'multi') {
-            this.playground.ws.send_player_stop(this.x, this.y)
+            this.playground.ws.send_player_stop(this.x, this.y, this.HP)
           }
           outer.vx = 0
           outer.vy = 0
@@ -106,18 +110,20 @@ export default class Player extends GameObject {
   get_dist(x1, y1, x2, y2) {
     return Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2))
   }
-  onAttack(angle) {
+  onAttack(angle, speed, hurt) {
     this.repel_vx = Math.cos(angle)
     this.repel_vy = Math.sin(angle)
-    this.repel_speed = 0.2
+    this.repel_speed = speed * this.friction
 
-    this.HP--
+
+    this.HP -= hurt
     if (this.HP <= 0) {
       this.destroy()
     }
     let scale = this.playground.height
     let x = this.x - this.playground.viewX
     let y = this.y - this.playground.viewY
+    new HPChangeNumber(this.playground, this, -1)
 
     this.ctx.beginPath()
     this.ctx.arc(x * scale, y * scale, this.radius * scale, 0, Math.PI * 2, false)
@@ -125,7 +131,7 @@ export default class Player extends GameObject {
     this.ctx.fill()
   }
   update() {
-    //人物移动 和 电脑射击
+    //人物移动
     if (this.character === 'me') {
       if (this.playground.view_lock_blank === true || this.playground.view_lock_y === true) {
         this.playground.viewX = this.x - 0.5 * this.playground.width / this.playground.scale
@@ -159,18 +165,17 @@ export default class Player extends GameObject {
           this.moveLength -= move
         }
       }
-    } else if (this.character === 'robot') {
+    } else if (this.character === 'robot') { //电脑射击
       if (this.moveLength === 0) {
-        this.move_to(Math.random() * this.playground.width / this.playground.scale, Math.random())
+        this.move_to(this.playground.player[0].x, this.playground.player[0].y)
       } else {
         let move = Math.min(this.moveLength, this.speed * this.timestamp / 1000)
         this.x += move * this.vx
         this.y += move * this.vy
         this.moveLength -= move
       }
-      if (Math.random() < (1 / 300)) {
-        let play = this.playground.player[Math.floor(Math.random() * this.playground.player.length)]
-        if (play === this) return
+      if (Math.random() < (1 / 180)) {
+        let play = this.playground.player[0]
         this.shoot_fireball(play.x, play.y)
       }
     } else if (this.character === 'enemy') {
@@ -218,12 +223,13 @@ export default class Player extends GameObject {
     this.ctx.fillText(this.name, (x - this.radius) * scale, (y - this.radius * 1.8) * scale)
     this.ctx.rect((x - this.radius) * scale, (y - this.radius * 1.6) * scale, this.radius * scale * 2, this.radius * scale * 0.3)
     this.ctx.fillStyle = '#11d845'
-    this.ctx.fillRect((x - this.radius) * scale, (y - this.radius * 1.6) * scale, this.radius * scale * 2 * (this.HP / 10), this.radius * scale * 0.3)
+    this.ctx.fillRect((x - this.radius) * scale, (y - this.radius * 1.6) * scale, this.radius * scale * 2 * (this.HP / this.HPMAX), this.radius * scale * 0.3)
     this.ctx.stroke()
     this.ctx.closePath()
   }
   destroy() {
     super.destroy()
+
     for (let i = 0; i < this.playground.player.length; i++) {
       let play = this.playground.player[i]
       if (play === this) {

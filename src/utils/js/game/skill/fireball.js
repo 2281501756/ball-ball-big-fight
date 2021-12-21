@@ -58,9 +58,9 @@ export default class Fireball extends GameObject {
   }
   attack(player) {
     let angle = Math.atan2(player.y - this.y, player.x - this.x)
-    player.onAttack(angle)
+    player.onAttack(angle, 0.5, 1)
     if (this.playground.mode === 'multi') {
-      this.playground.ws.send_on_attack(this.player.uuid, player.uuid, this.uuid, player.x, player.y, angle)
+      this.playground.ws.send_on_attack('fireball', this.player.uuid, player.uuid, this.uuid, player.x, player.y, angle, 1)
     }
     this.destroy()
   }

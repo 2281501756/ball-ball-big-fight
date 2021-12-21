@@ -3,6 +3,7 @@ import Map from './map/map';
 import Player from './player/player';
 import Multiplayer from '../../socket/multiplayer';
 import MinMap from './map/minMap';
+import MapItem from './map/mapItme';
 
 export default function (store, root) {
   let box = document.createElement('div')
@@ -14,6 +15,7 @@ export default function (store, root) {
   get_unit(playground)
   let map = new Map(playground)
   playground.minMap = new MinMap(playground)
+  playground.mapItem = new MapItem(playground)
   playground.map = map
   playground.scale = playground.height
   playground.mode = 'multi'
@@ -26,10 +28,13 @@ export default function (store, root) {
   playground.ws = new Multiplayer(playground, playground.player[0].uuid)
   playground.ws.socket.onopen = () => {
     playground.ws.send_create_user(store.state.userName, store.state.userPhoto)
+    setInterval(() => {
+      playground.ws.send_player_init(playground.player[0].x, playground.player[0].y, playground.player[0].HP)
+    }, 1000)
   }
 
 
-  add_Window_listenr(playground, map)
+  add_Window_listenr(playground, map, playground.minMap)
   add_GAME_ANIMATION(store)
 }
 
@@ -40,11 +45,12 @@ function get_unit(playground) {
   playground.height = unit * 9
   playground.width = unit * 16
 }
-function add_Window_listenr(playground, map) {
+function add_Window_listenr(playground, map, minMap) {
   window.onresize = function () {
     get_unit(playground)
     playground.scale = playground.height
     map.resize()
+    minMap.resize()
   }
 }
 function add_GAME_ANIMATION(store) {

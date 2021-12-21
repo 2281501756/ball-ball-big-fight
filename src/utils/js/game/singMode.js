@@ -3,6 +3,7 @@ import Map from './map/map';
 import Player from './player/player';
 import Multiplayer from '../../socket/multiplayer';
 import MinMap from './map/minMap';
+import MapItem from './map/mapItme';
 
 export default function (store, root) {
   let m = new Multiplayer()
@@ -18,6 +19,7 @@ export default function (store, root) {
   let map = new Map(playground)
   playground.map = map
   playground.minMap = new MinMap(playground)
+  playground.mapItem = new MapItem(playground)
   playground.scale = playground.height
   playground.player = []
   playground.viewX = 0
@@ -26,8 +28,8 @@ export default function (store, root) {
   playground.view_lock_blank = false
   playground.player.push(new Player(playground, 0.5 * playground.width / playground.height, 0.5, 0.05, 0.2, 'white', 'me', store.state.userPhoto, store.state.userName))
   for (let i = 0; i < 6; i++) {
-    let x = Math.random() * playground.width / playground.scale
-    let y = Math.random()
+    let x = (Math.random() * 4 - 1.5)
+    let y = (Math.random() * 4 - 1.5)
     let color = `rgb(${Math.random() * 256}, ${Math.random() * 256}, ${Math.random() * 256})`
     playground.player.push(new Player(playground, x, y, 0.05, 0.15, color, 'robot', '', '电脑'))
   }
