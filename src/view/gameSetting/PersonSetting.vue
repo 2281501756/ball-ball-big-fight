@@ -46,19 +46,38 @@
         <button @click="exit">退出</button>
       </div>
     </div>
+    <ModalBox v-if="modal" v-on:hide="ishide">
+      <h2 slot="header">提示</h2>
+      <div slot="section">保存成功请刷新一下</div>
+    </ModalBox>
   </div>
 </template>
 <script>
 import { persenSettingSave } from "@/utils/http/index";
+import ModalBox from "../ModalBox.vue";
 export default {
   data() {
     return {
       name: this.$store.state.userName,
       url: this.$store.state.userPhoto,
       gender: this.$store.state.userGender,
+      modal: false,
     };
   },
+  components: {
+    ModalBox,
+  },
+  mounted() {
+    setTimeout(() => {
+      this.name = this.$store.state.userName;
+      this.url = this.$store.state.userPhoto;
+      this.gender = this.$store.state.userGender;
+    }, 300);
+  },
   methods: {
+    ishide() {
+      this.modal = false;
+    },
     exit() {
       this.$router.push("/menu");
     },
@@ -74,7 +93,7 @@ export default {
           this.$store.state.userPhoto = Response.gender;
         });
       }
-      alert("保存成功！请刷新一下");
+      this.modal = true;
     },
   },
 };

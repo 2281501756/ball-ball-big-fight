@@ -15,7 +15,6 @@ export default class Fireball extends GameObject {
     this.length = length
     this.color = color
     this.ctx = this.playground.map.ctx
-    this.cd = 300
   }
   start() {
 

@@ -13,16 +13,16 @@ module.exports = {
     port: 8081,
     https: false,
     hotOnly: false,
-    proxy: null,
-    // proxy: {
-    //   '/api': {
-    //     target: 'http://82.157.165.74:8000/',//后端接口地址
-    //     changeOrigin: true,//是否允许跨越
-    //     pathRewrite: {
-    //       '^/api': '',//重写,
-    //     }
-    //   }
-    // },
+    // proxy: null,
+    proxy: {
+      '/api': {
+        target: 'http://82.157.165.74:8000/',//后端接口地址
+        changeOrigin: true,//是否允许跨越
+        pathRewrite: {
+          '^/api': '',//重写,
+        }
+      }
+    },
   },
 
 }

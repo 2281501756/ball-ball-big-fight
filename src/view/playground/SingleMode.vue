@@ -9,58 +9,60 @@
 </template>
 
 <script>
-import gameInit from "@/utils/js/game/singMode";
+import gameInit from '@/utils/js/game/singMode'
 export default {
   data() {
     return {
       showMenu: false,
-    };
+    }
   },
-  inject: ["reload"],
+  inject: ['reload', 'setBackground'],
   mounted() {
-    if (this.$store.state.userPhoto != "") {
-      cancelAnimationFrame(this.$store.state.animationId);
-      let root = document.querySelector(".singleMode");
-      gameInit(this.$store, root);
+    this.setBackground(2)
+    if (this.$store.state.userPhoto != '') {
+      cancelAnimationFrame(this.$store.state.animationId)
+      let root = document.querySelector('.singleMode')
+      gameInit(this.$store, root, this.$store.state.gameGrade)
     } else {
       setTimeout(() => {
-        cancelAnimationFrame(this.$store.state.animationId);
-        let root = document.querySelector(".singleMode");
-        gameInit(this.$store, root);
-      }, 500);
+        cancelAnimationFrame(this.$store.state.animationId)
+        let root = document.querySelector('.singleMode')
+        gameInit(this.$store, root, this.$store.state.gameGrade)
+      }, 500)
     }
 
-    window.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") {
-        this.showMenu = !this.showMenu;
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        this.showMenu = !this.showMenu
         if (this.showMenu === true) {
           setTimeout(() => {
-            let menu = document.querySelector(".menu");
-            menu.addEventListener("contextmenu", (e) => {
+            let menu = document.querySelector('.menu')
+            menu.addEventListener('contextmenu', (e) => {
               if (e.which === 3) {
-                e.preventDefault();
-                return false;
+                e.preventDefault()
+                return false
               }
-            });
-          }, 100);
+            })
+          }, 100)
         } else {
         }
       }
-    });
+    })
   },
   methods: {
     backGame() {
-      this.showMenu = !this.showMenu;
+      this.showMenu = !this.showMenu
     },
     refreshGame() {
-      cancelAnimationFrame(this.$store.state.animationId);
-      this.reload();
+      cancelAnimationFrame(this.$store.state.animationId)
+      this.reload()
     },
     exitGame() {
-      this.$router.push("/menu");
+      this.setBackground('http://82.157.165.74:8000/static/audio/main1.mp3')
+      this.$router.push('/menu')
     },
   },
-};
+}
 </script>
 
 <style scoped>
@@ -88,6 +90,5 @@ export default {
   width: 100%;
   height: 25%;
 }
-</style>>
-
-
+</style>
+>

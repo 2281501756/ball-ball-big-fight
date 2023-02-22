@@ -1,12 +1,13 @@
 import GameObject from "../game_object";
+import { getMapData } from "../../../http/playground";
 export default class Map extends GameObject {
   constructor(playground) {
     super()
-    playground.innerHTML = `<canvas style="position: relative; left: 50%; top: 50%; transform: translate(-50%, -50%);"></canvas>`
+    playground.innerHTML = `<canvas tabindex=0 style="position: relative; left: 50%; top: 50%; transform: translate(-50%, -50%);"></canvas>`
     this.playground = playground
     this.canvas = document.querySelector('canvas')
     this.ctx = this.canvas.getContext('2d')
-
+    window.canvas = this.canvas
     const dpr = window.devicePixelRatio
     const logicalWidth = this.playground.width
     const logicalHeight = this.playground.height
@@ -20,23 +21,53 @@ export default class Map extends GameObject {
   start() {
     /*
     1 表示默认方块
-    2 表示草丛
-    3 表示墙
-    4 表示火地
-    5 表示冰面
+    2 表示回血
+    3 表示火地
+    4 表示冰面
     */
+    // this.mapData = [
+    //   [1, 1, 1, 1, 1, 1, 1, 3, 1, 1],
+    //   [1, 1, 1, 1, 4, 1, 1, 3, 1, 1],
+    //   [1, 2, 2, 1, 1, 1, 1, 3, 1, 1],
+    //   [1, 2, 3, 1, 5, 1, 1, 3, 3, 1],
+    //   [1, 2, 4, 1, 1, 1, 5, 2, 1, 1],
+    //   [1, 1, 1, 2, 1, 1, 3, 1, 1, 1],
+    //   [5, 5, 5, 5, 4, 5, 5, 5, 5, 5],
+    //   [1, 3, 1, 4, 4, 4, 1, 1, 1, 1],
+    //   [1, 1, 1, 1, 4, 1, 1, 2, 1, 1],
+    //   [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+    // ]
     this.mapData = [
-      [1, 1, 1, 1, 1, 1, 1, 3, 1, 1],
-      [1, 1, 1, 1, 4, 1, 1, 3, 1, 1],
-      [1, 2, 2, 1, 1, 1, 1, 3, 1, 1],
-      [1, 2, 3, 1, 1, 1, 1, 3, 3, 1],
-      [1, 2, 2, 1, 1, 1, 1, 1, 1, 1],
-      [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-      [5, 5, 5, 5, 4, 5, 5, 5, 5, 5],
-      [1, 3, 1, 4, 4, 4, 1, 1, 1, 1],
-      [1, 1, 1, 1, 4, 1, 1, 2, 1, 1],
-      [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+      [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+      [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+      [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+      [1,1,1,1,1,1,1,1,1,1,1,1,4,1,1,1,1,1,1,1],
+      [1,1,1,4,1,1,1,1,4,1,1,1,1,1,1,1,1,1,1,1],
+      [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,3,1,1,1],
+      [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+      [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+      [1,1,1,4,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+      [1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,3,3,3,1],
+      [1,1,1,1,1,1,1,1,1,1,1,1,4,1,1,1,3,1,3,1],
+      [1,1,1,1,4,1,1,1,1,1,1,1,1,1,1,1,3,3,3,1],
+      [1,1,1,1,1,1,1,1,4,1,1,1,1,1,1,1,1,1,1,1],
+      [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+      [1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,4,1],
+      [1,1,1,1,1,1,1,1,1,4,1,1,1,1,1,2,1,1,1,1],
+      [1,4,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1],
+      [1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,3,1,1,1],
+      [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1],
+      [1,1,1,3,1,1,1,1,1,1,3,1,1,1,1,1,1,1,1,1],
     ]
+    if (this.playground.mode !== 'multi') {
+      for (let i = 0; i < 40; i++) {
+        this.mapData[Math.floor(Math.random() * 20)][Math.floor(Math.random() * 20)] = Math.floor(Math.random() * 4) + 1
+      }
+
+    } else {
+     
+    }
+   
   }
   update() {
     this.render()
@@ -47,23 +78,24 @@ export default class Map extends GameObject {
     let x = -1.5
     let y = -1.5
     this.ctx.beginPath()
-    this.ctx.strokeStyle = '#aaa'
+    this.ctx.strokeStyle = '#111'
     this.ctx.lineWidth = 10
-    for (let i = 0; i < 10; i++) {
-      for (let j = 0; j < 10; j++) {
+    for (let i = 0; i < 20; i++) {
+      for (let j = 0; j < 20; j++) {
         if (this.mapData[i][j] === 1) {
           this.ctx.fillStyle = `#333`
         } else if (this.mapData[i][j] === 2) {
           this.ctx.fillStyle = '#57c038'
         } else if (this.mapData[i][j] === 3) {
-          this.ctx.fillStyle = '#a86933'
-        } else if (this.mapData[i][j] === 4) {
           this.ctx.fillStyle = '#da3030'
-        } else if (this.mapData[i][j] === 5) {
+        } else if (this.mapData[i][j] === 4) {
           this.ctx.fillStyle = '#4875e7'
+        } else if (this.mapData[i][j] === 5) {
+          
         }
-        this.ctx.fillRect((x - this.playground.viewX + 4 / 10 * j) * this.playground.scale, (y - this.playground.viewY + 4 / 10 * i) * this.playground.scale, this.playground.scale * 4 / 10, this.playground.scale * 4 / 10)
-        this.ctx.strokeRect((x - this.playground.viewX + 4 / 10 * j) * this.playground.scale, (y - this.playground.viewY + 4 / 10 * i) * this.playground.scale, this.playground.scale * 4 / 10, this.playground.scale * 4 / 10)
+        this.ctx.fillRect((x - this.playground.viewX + 4 / 20 * j) * this.playground.scale, (y - this.playground.viewY + 4 / 20 * i) * this.playground.scale, this.playground.scale * 4 / 20, this.playground.scale * 4 / 20)
+        this.ctx.lineWidth = 1
+        this.ctx.strokeRect((x - this.playground.viewX + 4 / 20 * j) * this.playground.scale, (y - this.playground.viewY + 4 / 20 * i) * this.playground.scale, this.playground.scale * 4 / 20, this.playground.scale * 4 / 20)
         this.ctx.stroke()
       }
     }

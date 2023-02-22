@@ -1,3 +1,5 @@
+import { get } from "../http/request"
+import  vue  from "../../view/playground/MultiMode"
 import Player from "../js/game/player/player"
 
 export default class Multiplayer {
@@ -16,6 +18,8 @@ export default class Multiplayer {
       let data = JSON.parse(e.data)
       if (data.event === 'create_user') {
         this.receive_create_user(data)
+      } else if (data.event === 'user_lever') {
+        this.receive_user_lever(data)
       } else if (data.event === 'move_to') {
         this.receive_move_to(data)
       } else if (data.event === 'shoot_fireball') {
@@ -26,6 +30,10 @@ export default class Multiplayer {
         this.receive_player_stop(data)
       } else if (data.event === 'player_init') {
         this.recevie_player_init(data)
+      } else if (data.event === 'chat') {
+        this.receive_chat(data)
+      } else if (data.event === 'blink') {
+        this.receive_blink(data)
       }
     }
   }
@@ -48,9 +56,21 @@ export default class Multiplayer {
   }
   receive_create_user(data) {
     if (data.uuid === this.uuid) return
-    let play = new Player(this.playground, 0.5 * this.playground.width / this.playground.height, 0.5, 0.05, 0.2, 'white', 'enemy', data.userphoto, data.username)
+    let play = new Player(this.playground, 0.5 * this.playground.width / this.playground.height, 0.5, 0.05, 0.2, 'white', 'enemy', data.userphoto, data.username, 50)
     play.uuid = data.uuid
     this.playground.player.push(play)
+  }
+  receive_user_lever(data) {
+    let play = this.getPlay(data.uuid)
+    if (play) {
+      for (let i = 0; i < this.playground.player.length; i++) {
+        if (play === this.playground.player[i]) {
+          this.playground.player.splice(i, 1)
+          break
+        }
+      }
+      play.destroy()
+    }
   }
   send_move_to(x, y) {
     this.socket.send(JSON.stringify({
@@ -138,6 +158,7 @@ export default class Multiplayer {
   send_player_init(x, y, HP) {
     this.socket.send(JSON.stringify({
       "event": "player_init",
+      "uuid": this.uuid,
       "x": x,
       "y": y,
       "HP": HP,
@@ -149,6 +170,33 @@ export default class Multiplayer {
       play.x = data.x
       play.y = data.y
       play.HP = data.HP
+    }
+  }
+  send_chat(name, message) {
+    this.socket.send(JSON.stringify({
+      "event": "chat",
+      "uuid": this.uuid,
+      "name": name,
+      "message": message,
+    }))
+  }
+  receive_chat(data) {
+    if (this.uuid !== data.uuid) {
+      vue.methods.send_chat_add_data(data.name, data.message)      
+    }
+  }
+  send_blink(mx, my) {
+    this.socket.send(JSON.stringify({
+      "event": "blink",
+      "uuid": this.uuid,
+      "x": mx,
+      "y": my,
+    }))
+  }
+  receive_blink(data) {
+    if (this.uuid !== data.uuid) {
+      let play = this.getPlay(data.uuid)
+      play.blink(data.x, data.y)
     }
   }
 }

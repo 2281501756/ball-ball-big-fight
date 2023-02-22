@@ -21,18 +21,10 @@
         <input type="text" placeholder="用户名" v-model="username_register" />
       </div>
       <div class="login-form-item password">
-        <input
-          type="password"
-          placeholder="密码"
-          v-model="password_register1"
-        />
+        <input type="password" placeholder="密码" v-model="password_register1" />
       </div>
       <div class="login-form-item password">
-        <input
-          type="password"
-          placeholder="确认密码"
-          v-model="password_register2"
-        />
+        <input type="password" placeholder="确认密码" v-model="password_register2" />
       </div>
       <div class="login-form-item-config">
         <span class="warning">{{ warning_register }}</span>
@@ -46,69 +38,70 @@
 </template>
 
 <script>
-import { login, register } from "../utils/http/index";
+import { login, register } from '../utils/http/index'
+
 export default {
   data() {
     return {
       isRegister: false,
-      username_login: "",
-      password_login: "",
-      warning_login: "",
-      warning_register: "",
-      username_register: "",
-      password_register1: "",
-      password_register2: "",
-    };
+      username_login: '',
+      password_login: '',
+      warning_login: '',
+      warning_register: '',
+      username_register: '',
+      password_register1: '',
+      password_register2: '',
+    }
   },
+  inject: ['setBackground'],
   methods: {
     goTo() {
       //登录和注册切换
-      this.isRegister = !this.isRegister;
+      this.isRegister = !this.isRegister
     },
     goLogin() {
-      if (this.username_login === "" || this.password_login === "") {
-        this.warning_login = "用户名或密码不能为空";
-        return;
+      if (this.username_login === '' || this.password_login === '') {
+        this.warning_login = '用户名或密码不能为空'
+        return
       }
       login(this.username_login, this.password_login).then((Response) => {
-        if (Response.result === "success") {
-          this.warning_login = "";
-          this.$store.state.userName = Response.name;
-          this.$store.state.userGender = Response.gender;
-          this.$store.state.userPhoto = Response.photo;
-          this.$router.push("/menu");
+        console.log(Response.result, 'success')
+        if (Response.result === 'success') {
+          this.warning_login = ''
+          this.$store.state.userName = Response.name
+          this.$store.state.userGender = Response.gender
+          this.$store.state.userPhoto = Response.photo
+          this.setBackground(1)
+          this.$router.push('/menu')
         } else {
-          this.warning_login = "用户名或密码错误";
+          this.warning_login = '用户名或密码错误'
         }
-      });
+      })
     },
     goRegister() {
-      if (this.username_register === "" || this.password_register1 === "") {
-        this.warning_register = "用户名或密码不能为空";
-        return;
+      if (this.username_register === '' || this.password_register1 === '') {
+        this.warning_register = '用户名或密码不能为空'
+        return
       }
-      register(
-        this.username_register,
-        this.password_register1,
-        this.password_register2
-      ).then((Response) => {
-        if (Response.result === "succeed") {
-          this.warning_register = "注册成功";
-        } else {
-          this.warning_register = Response.result;
+      register(this.username_register, this.password_register1, this.password_register2).then(
+        (Response) => {
+          if (Response.result === 'succeed') {
+            this.warning_register = '注册成功, 请返回登录'
+          } else {
+            this.warning_register = Response.result
+          }
         }
-      });
+      )
     },
   },
-};
+}
 </script>
 
 <style scoped>
 .login {
   width: 100vw;
   height: 100vh;
-  background: url("../assets/image/background/image2.jpg") no-repeat
-    center/cover;
+  background: url('../assets/image/background/image2.jpg') no-repeat center/cover;
   overflow: hidden;
   user-select: none;
 }
@@ -165,18 +158,18 @@ export default {
   font-size: 18px;
   left: 22%;
   margin-top: 2.25%;
-  font-family: "iconfont";
+  font-family: 'iconfont';
   position: absolute;
-  content: "\e65e";
+  content: '\e65e';
 }
 .password::before {
   height: 100%;
   font-size: 18px;
   left: 22%;
   margin-top: 2.25%;
-  font-family: "iconfont";
+  font-family: 'iconfont';
   position: absolute;
-  content: "\e608";
+  content: '\e608';
 }
 .login-form-item-config {
   height: 10%;

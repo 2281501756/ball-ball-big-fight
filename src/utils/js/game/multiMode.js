@@ -21,19 +21,18 @@ export default function (store, root) {
   playground.mode = 'multi'
   playground.viewX = 0
   playground.viewY = 0
-  playground.view_lock_y = false
+  playground.view_lock_y = true
   playground.view_lock_blank = false
   playground.player = []
-  playground.player.push(new Player(playground, 0.5 * playground.width / playground.height, 0.5, 0.05, 0.2, 'white', 'me', store.state.userPhoto, store.state.userName))
+  playground.player.push(new Player(playground, 0.5 * playground.width / playground.height, 0.5, 0.05, 0.2, 'white', 'me', store.state.userPhoto, store.state.userName, 50))
   playground.ws = new Multiplayer(playground, playground.player[0].uuid)
   playground.ws.socket.onopen = () => {
-    playground.ws.send_create_user(store.state.userName, store.state.userPhoto)
+  playground.ws.send_create_user(store.state.userName, store.state.userPhoto)
     setInterval(() => {
       playground.ws.send_player_init(playground.player[0].x, playground.player[0].y, playground.player[0].HP)
     }, 1000)
   }
-
-
+  window.ws = playground.ws
   add_Window_listenr(playground, map, playground.minMap)
   add_GAME_ANIMATION(store)
 }
@@ -47,12 +46,14 @@ function get_unit(playground) {
 }
 function add_Window_listenr(playground, map, minMap) {
   window.onresize = function () {
+    window.chat_init()
     get_unit(playground)
     playground.scale = playground.height
     map.resize()
     minMap.resize()
   }
 }
+
 function add_GAME_ANIMATION(store) {
   let last_timestamp = 0
   let GAME_ANIMATION = function (timestamp) {

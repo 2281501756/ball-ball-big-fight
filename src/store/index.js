@@ -9,11 +9,18 @@ const store = new Vuex.Store({
     userGender: '',
     userPhoto: '',
     animationId: 0,
+    gameGrade: 1,
   },
   mutations: {
     getphoto(state) {
       return state.userPhoto
+    },
+    setBackgroundMusic(name) {
+      if (name = '2') {
+        audios[0].src =  './assets/audio/main2.mp3'        
+      }
     }
+    
   },
   actions: {
     addUserData(context, data) {

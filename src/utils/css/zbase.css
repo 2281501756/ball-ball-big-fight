@@ -1,0 +1,11 @@
+.canvas_shadow_red {
+  box-shadow: 0px 0px 233px 81px rgba(255, 0, 0, 1);
+  -webkit-box-shadow: 0px 0px 233px 81px rgba(255, 0, 0, 1);
+  -moz-box-shadow: 0px 0px 233px 81px rgba(255, 0, 0, 1);
+}
+
+.canvas_shadow_blue {
+  box-shadow: 0px 0px 233px 81px rgba(0, 139, 255, 1);
+  -webkit-box-shadow: 0px 0px 233px 81px rgba(0, 139, 255, 1);
+  -moz-box-shadow: 0px 0px 233px 81px rgba(0, 139, 255, 1);
+}

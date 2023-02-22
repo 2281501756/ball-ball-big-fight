@@ -27,6 +27,10 @@ const routes = [
   {
     path: '/multi',
     component: () => import('../view/playground/MultiMode')
+  },
+  {
+    path: '/singlegrade',
+    component: () => import('../view/gamoInit/SingleGrade')
   }
 ]
 
