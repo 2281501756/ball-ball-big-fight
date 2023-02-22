@@ -1,24 +1,10 @@
-# acapp
+# 球球大作战
 
-## Project setup
-```
-npm install
-```
+使用 requestAnimationFrame 实现 canvas 帧渲染 实现两个技能以及一个地图
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+游玩连接[http://43.143.237.216:28001/acwing/ball](http://43.143.237.216:28001/acwing/ball)
 
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+![image](public/2.png)
+![image](public/1.png)
+![image](src/assets/image/course/3.png)
+![image](src/assets/image/course/2.png)
